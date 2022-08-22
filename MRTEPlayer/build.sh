@@ -1,14 +1,22 @@
 #!/bin/bash
 
-TARGETPATH=/data1/MRTE2/MRTEPlayer/build
+cur_dir=$(dirname `realpath $0`)
+if [[ -z $MRTE_HOME ]]; then
+	MRTE_HOME=${cur_dir%/*}
+fi
+
+MRTE_PLAYER_HOME=$MRTE_HOME/MRTEPlayer
+
+TARGETPATH=$MRTE_PLAYER_HOME/build
 CLASSPATH=.
-for jar in /data1/MRTE2/MRTEPlayer/lib/*.jar; do
+
+for jar in $MRTE_PLAYER_HOME/lib/*.jar;
+do
     CLASSPATH=$CLASSPATH:$jar
 done
 
-pushd src
-
-echo "javac -cp $CLASSPATH mrte/*.java =d $TARGETPATH"
+pushd $MRTE_PLAYER_HOME/src
+echo "javac -cp $CLASSPATH mrte/*.java -d $TARGETPATH"
 javac -cp $CLASSPATH mrte/*.java -d $TARGETPATH
-
 popd
+

@@ -8,13 +8,14 @@ fi
 MRTE_PLAYER_HOME=$MRTE_HOME/MRTEPlayer
 
 LOG_DATE=`date +%m%d_%H%M%S` # MonthDay_HHMMSS
-LOG_DIR=$MRTE_HOME/log/$LOG_DATE
+LOG_DIR=$MRTE_PLAYER_HOME/log/$LOG_DATE
 mkdir -p $LOG_DIR
 
 CLASSPATH=.:$MRTE_PLAYER_HOME/build/
 for jar in $MRTE_PLAYER_HOME/lib/*.jar; do
     CLASSPATH=$CLASSPATH:$jar
 done
+
 
 # for Mac
 if [[ `uname -s` -eq "Darwin" ]];
@@ -57,7 +58,7 @@ java \
   --mysql_url='jdbc:mysql://127.0.0.1:3306/mysqlslap?user=mrte2&password=mrte2' \
   --mysql_init_connections=50 \
   --mysql_default_db="mysqlslap" \
-  --mongo_url='mongodb://mongo-queue-db:30000/mrte?connectTimeoutMS=300000&authSource=admin' \
+  --mongo_url="mongodb://$MRTE_MONGODB_ADDR/mrte?connectTimeoutMS=300000&authSource=admin" \
   --mongo_db="mrte" \
   --mongo_collectionprefix="mrte" \
   --mongo_collections=5 \
