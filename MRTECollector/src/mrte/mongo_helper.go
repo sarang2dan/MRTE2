@@ -19,12 +19,12 @@ import (
 type MysqlRequest struct {
 	// 이미 패킷 분석이 되었는지 여부
 	// AlreadyParsed==true이면, 이는 실제 캡쳐된 패킷이 아니라, 이 프로그램에서 인위적으로 생성한 패킷임 (그리고 이 경우 Data 필드이 값이 NULL임)
-	// AlreadyParsed==false이면, 실제 캡쳐된 패킷이며, Data 필드가 NOT NULL임 
+	// AlreadyParsed==false이면, 실제 캡쳐된 패킷이며, Data 필드가 NOT NULL임
 	AlreadyParsed bool
 
 	// 요청을 발생시킨 Client의 IpAddress와 Port
 	// (SourceIp + SourcePort) 조합은 MRTECollector에서 패킷 어셈블의 기준임과 동시에 multi-thread 처리의 기준이며,
-	//                              MRTEPlayer에서는 SQLPlayer객체를 할당하는 기준임 
+	//                              MRTEPlayer에서는 SQLPlayer객체를 할당하는 기준임
 	SrcIp   string
 	SrcPort int32 // port는 uint16 타입이지만, Java나 MongoDB 연동을 위해서 int32 타입으로 관리한다.
 
@@ -38,7 +38,7 @@ type MysqlRequest struct {
 	//  - c : MySQL Packet에서 command (int 타입)
 	//  - q : MySQL Packet에서 data (string 타입)
 	//        connection 패킷인 경우, []byte 타입의 값을 HexString으로 변환해서 MongoDB에 저장
-	//        text-protocol 패킷인 경우, Client가 실행 요청한 Statement를 그대로 string으로 MongoDB에 저장 
+	//        text-protocol 패킷인 경우, Client가 실행 요청한 Statement를 그대로 string으로 MongoDB에 저장
 	ParsedRequest *bson.M
 }
 
@@ -113,8 +113,8 @@ func reCreateCappedCollection(dbName string, collectionName string, maxSize int)
 	// CappedCollection이 생성되면, 초기에 1건의 샘플 데이터를 저장한다.
 	// CappedCollection에 레코드가 한건도 없으면, MRTEPlayer의 TailableCursor의 데이터 읽기가 계속 실패하게 된다.
 	// 그래서 최소 한건의 데이터는 CappedCollection에 있어야 하므로, 테이블 재생성되면 샘플 데이터 1건을 저장한다.
-	// 여기에서 저장되는 데이터는 MRTEPlayer가 읽어가긴 하지만, 실제 Target MySQL 서버로 실행되진 않고 그냥 MRTEPlayer가 무시하게 된다. 
-	// ** (아래 샘플 데이터의 내용 변경하지 말것) ** 
+	// 여기에서 저장되는 데이터는 MRTEPlayer가 읽어가긴 하지만, 실제 Target MySQL 서버로 실행되진 않고 그냥 MRTEPlayer가 무시하게 된다.
+	// ** (아래 샘플 데이터의 내용 변경하지 말것) **
 	err = collection.Insert(bson.M{"ip": "127.0.0.1", "port": 0, "req": bson.M{"c": COM_UNKNOWN, "q": "Initial Marker for CappedCollection"}})
 	if err != nil {
 		fmt.Printf("%+v \n", err)

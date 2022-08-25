@@ -2,18 +2,32 @@ CUR_DIR=$(shell pwd)
 BIN_DIR=$(CUR_DIR)/bin
 MRTE_COLLECTOR_BIN=$(BIN_DIR)/MRTECollector
 
+ifeq ($(WITH_RACE), )
+WITH_RACE=0
+endif
+
+ifeq ($(WITH_RACE), 0)
+RACE_FLAGS=
+else
+RACE_FLAGS= -race
+endif
+
+GOBUILD_FLAGS += $(RACE_FLAGS)
+
 all: build_player build_collector
 
 help:
 	@echo "---- USAGE -----------------------------"
-	@echo "make [targets]"
+	@echo "[flags] make [targets] [flags]"
 	@echo "  targets:"
-	@echo "   - clean:	         clean binary and classs files"
-	@echo "   - build_player:    build MRTEPlayer"
-	@echo "   - build_collector: build MRTECollector"
-	@echo "   - run_player:      run MRTEPlayer"
-	@echo "   - run_collector:   run MRTECollector"
-	@echo "   - help: show this help messages"
+	@echo "    - clean:	         clean binary and classs files"
+	@echo "    - build_player:    build MRTEPlayer"
+	@echo "    - build_collector: build MRTECollector"
+	@echo "    - run_player:      run MRTEPlayer"
+	@echo "    - run_collector:   run MRTECollector"
+	@echo "    - help:            show this help messages"
+	@echo "  flags:"
+	@echo "    - WITH_RACE=[0|1]: 1: go build with '-race' (default:0)"
 
 
 build_player:
@@ -24,7 +38,7 @@ build_player:
 
 build_collector:
 	@echo "======= build collector ========"
-	go build -o $(MRTE_COLLECTOR_BIN) MRTECollector/MRTECollector.go 
+	go build $(GOBUILD_FLAGS) -o $(MRTE_COLLECTOR_BIN) MRTECollector/MRTECollector.go 
 	@echo ""
 
 run_player:
